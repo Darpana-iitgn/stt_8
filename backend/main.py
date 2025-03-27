@@ -3,6 +3,8 @@ from elasticsearch import Elasticsearch
 import uvicorn
 
 app = FastAPI()
+
+# Connect to Elasticsearch (by service name)
 es = Elasticsearch(["http://elasticsearch:9200"])
 
 @app.get("/health")
