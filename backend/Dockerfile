@@ -2,16 +2,17 @@ FROM python:3.9-alpine
 
 WORKDIR /app
 
-# Install dependencies (no cache)
+# Install dependencies without caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the source code (make sure entrypoint.sh uses LF line endings)
+# Copy all backend files into /app
 COPY . .
 
-# Ensure the entrypoint script is executable
+# Ensure entrypoint.sh is executable
 RUN chmod +x entrypoint.sh
 
 EXPOSE 9567
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Use the full path of the entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"]
