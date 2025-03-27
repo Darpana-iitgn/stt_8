@@ -1,7 +1,7 @@
 FROM elasticsearch:7.17.0
 
-# Create a non-root user and switch to it
-RUN groupadd -r elasticsearch && useradd -r -g elasticsearch elasticsearch_user
+RUN groupadd -r elasticsearch || true && useradd -r -g elasticsearch elasticsearch_user || true
+
 USER elasticsearch_user
 
 ENV discovery.type=single-node \
