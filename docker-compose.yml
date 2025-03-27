@@ -1,13 +1,12 @@
+version: '3.8'
 services:
   elasticsearch:
     build: ./elasticsearch
     container_name: elasticsearch
-    networks:
-      - lab-net
     volumes:
       - esdata:/usr/share/elasticsearch/data
-    environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - lab-net
 
   backend:
     build: ./backend
@@ -17,15 +16,11 @@ services:
     ports:
       - "9567:9567"
     depends_on:
-      - elasticsearch
-
-networks:
-  lab-net:
+      elasticsearch:
+        condition: service_healthy
 
 volumes:
   esdata:
-    driver: local
-    driver_opts:
-      type: none
-      device: /path/to/host/directory  
-      o: bind
+
+networks:
+  lab-net:
