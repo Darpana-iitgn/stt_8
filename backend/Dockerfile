@@ -1,9 +1,18 @@
 FROM python:3.9-alpine
 
 WORKDIR /app
+
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY main.py .
+
+# Copy application code
+COPY . .
+
+# Copy and set entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 9567
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9567"]
+
+ENTRYPOINT ["/entrypoint.sh"]

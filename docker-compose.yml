@@ -1,26 +1,23 @@
 version: '3.8'
+
 services:
   elasticsearch:
-    build: ./elasticsearch
-    container_name: elasticsearch
+    build:
+      context: ./elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
     volumes:
       - esdata:/usr/share/elasticsearch/data
-    networks:
-      - lab-net
 
   backend:
-    build: ./backend
-    container_name: backend
-    networks:
-      - lab-net
+    build:
+      context: ./backend
     ports:
       - "9567:9567"
     depends_on:
-      elasticsearch:
-        condition: service_healthy
+      - elasticsearch
 
 volumes:
   esdata:
-
-networks:
-  lab-net:
+    driver: local
