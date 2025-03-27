@@ -9,7 +9,7 @@ COPY init-elasticsearch.py /init-elasticsearch.py
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Set environment variables for single-node mode and disable security
+# Set environment variables for single-node mode and disable security features
 ENV discovery.type=single-node \
     ES_JAVA_OPTS="-Xms512m -Xmx512m" \
     bootstrap.memory_lock=true \

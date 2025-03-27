@@ -4,7 +4,7 @@ import uvicorn
 
 app = FastAPI()
 
-# Connect to Elasticsearch (by service name)
+# Connect to Elasticsearch by its service name "elasticsearch" on port 9200
 es = Elasticsearch(["http://elasticsearch:9200"])
 
 @app.get("/health")
