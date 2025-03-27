@@ -5,6 +5,10 @@ import uvicorn
 app = FastAPI()
 es = Elasticsearch(["http://elasticsearch:9200"])
 
+@app.get("/health")
+def health_check():
+    return {"status": "OK", "es_status": es.ping()}
+
 @app.post("/insert")
 async def insert_document(text: str):
     try:
