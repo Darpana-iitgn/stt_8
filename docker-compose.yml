@@ -6,6 +6,8 @@ services:
       - lab-net
     volumes:
       - esdata:/usr/share/elasticsearch/data
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 
   backend:
     build: ./backend
@@ -22,3 +24,8 @@ networks:
 
 volumes:
   esdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: /path/to/host/directory  
+      o: bind
