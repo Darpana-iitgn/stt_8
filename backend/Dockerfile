@@ -2,16 +2,15 @@ FROM python:3.9-alpine
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies without caching to reduce image size
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Copy all backend source files
 COPY . .
 
-# Copy and set entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Ensure the entrypoint script is executable
+RUN chmod +x entrypoint.sh
 
 EXPOSE 9567
 

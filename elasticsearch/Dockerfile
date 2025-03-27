@@ -1,6 +1,11 @@
 FROM docker.elastic.co/elasticsearch/elasticsearch:7.17.10
 
-# Set environment variables to disable extra bootstrap checks and security
+# Switch to root to install python3, then revert to the default user
+USER root
+RUN apt-get update && apt-get install -y python3 && rm -rf /var/lib/apt/lists/*
+USER elasticsearch
+
+# Set environment variables to run in single-node mode and disable security features
 ENV discovery.type=single-node \
     ES_JAVA_OPTS="-Xms512m -Xmx512m" \
     bootstrap.memory_lock=true \
@@ -13,7 +18,7 @@ RUN chmod +x /entrypoint.sh
 
 EXPOSE 9200 9300
 
-# Healthcheck: wait until cluster health is at least yellow
+# Healthcheck: Wait until cluster health is at least yellow
 HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=12 \
   CMD curl -s "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=10s" > /dev/null || exit 1
 

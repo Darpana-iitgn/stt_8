@@ -2,8 +2,8 @@
 set -e
 
 echo "Starting Elasticsearch using the official entrypoint..."
-# Call the official entrypoint script in the background.
-/usr/local/bin/docker-entrypoint.sh &
+# Start the official Elasticsearch entrypoint script in the background.
+exec /usr/local/bin/docker-entrypoint.sh &
 
 echo "Waiting for Elasticsearch to be available..."
 until curl -s http://localhost:9200 > /dev/null; do
@@ -11,6 +11,7 @@ until curl -s http://localhost:9200 > /dev/null; do
 done
 
 echo "Elasticsearch is available. Running initialization script..."
-python /init-elasticsearch.py
+python3 /init-elasticsearch.py
 
+# Wait on the Elasticsearch process so the container remains running.
 wait
