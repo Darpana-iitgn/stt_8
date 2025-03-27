@@ -1,31 +1,30 @@
-from fastapi import FastAPI, HTTPException, Form
+from fastapi import FastAPI, HTTPException
 from elasticsearch import Elasticsearch
 import uvicorn
 
 app = FastAPI()
 es = Elasticsearch(["http://elasticsearch:9200"])
 
-# Insert document
 @app.post("/insert")
-async def insert_document(text: str = Form(...)):
+async def insert_document(text: str):
     try:
-        # Get next ID
-        search_result = es.search(index="india", body={"sort": [{"id": {"order": "desc"}}], "size": 1})
-        new_id = str(int(search_result['hits']['hits'][0]['_source']['id']) + 1) if search_result['hits']['total']['value'] > 0 else "1"
-        
-        es.index(index="india", document={"id": new_id, "text": text})
-        return {"status": "success", "inserted_id": new_id}
-    
+        doc = {"text": text}
+        res = es.index(index="india", document=doc)
+        return {"id": res["_id"], "status": "success"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Search document 
 @app.get("/search")
-async def search_document(query: str):
+async def search_documents(query: str):
     try:
-        result = es.search(index="india", body={"query": {"match": {"text": query}}})
-        return result['hits']['hits'][0]['_source'] if result['hits']['total']['value'] > 0 else {}
-    
+        res = es.search(
+            index="india",
+            body={"query": {"match": {"text": query}}}
+        )
+        return {
+            "results": [hit["_source"] for hit in res["hits"]["hits"]],
+            "count": res["hits"]["total"]["value"]
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

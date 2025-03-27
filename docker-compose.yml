@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    build: ./elasticsearch
+    container_name: elasticsearch
+    networks:
+      - lab-net
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  backend:
+    build: ./backend
+    container_name: backend
+    networks:
+      - lab-net
+    ports:
+      - "9567:9567"
+    depends_on:
+      - elasticsearch
+
+networks:
+  lab-net:
+
+volumes:
+  esdata:
